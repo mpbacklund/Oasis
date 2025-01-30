@@ -13,6 +13,10 @@ const PlayerStart = () => {
         setName(e.target.value);
     }
 
+    const joinGame = () => {
+      
+    }
+
   return (
     <>
     <div className="min-h-screen w-screen bg-gray-100 flex flex-col">
@@ -32,16 +36,17 @@ const PlayerStart = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
                 placeholder="Room Code" 
                 onChange={onRoomCodeChange}
-                value={roomCode}
             />
             <input 
                 type="text" 
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
                 placeholder="Player Name" 
                 onChange={onNameChange}
-                value={name}
+
             />
-            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={joinGame}
+            >
                 Join Game
             </button>
           </div>

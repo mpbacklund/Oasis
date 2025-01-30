@@ -1,13 +1,40 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router'
+import { useState, useEffect } from 'react'
+import { NavLink, useOutletContext, useNavigate } from 'react-router'
+import { Socket } from "socket.io-client";
 import gamesData from '../games/games.json'
 
 const HostStart = () => {
-    const [selectedGame, setSelectedGame] = useState(null);
+  let navigate = useNavigate();
+  const { storeSocket, } = useOutletContext<{ 
+    emitMessage: (event: string, message: any) => void;
+    messages: string[];
+    roomCode: string;
+  }>();
 
-  const handleSelect = (game) => {
+  const [selectedGame, setSelectedGame] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Create and initialize the socket connection
+    const newSocket = io("http://localhost:3000");
+
+    // Pass the socket reference back to the parent
+    storeSocket(newSocket);
+
+    // Clean up the socket connection when the child unmounts
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [storeSocket]);
+
+  const handleSelect = (game: string) => {
     setSelectedGame(game);
   };
+
+  const gameStart = () => {
+    // TODO: do some error handling and stuff here to make sure selectedGame exists
+    emitMessage("gameSelected", selectedGame);
+    //navigate(`/host/${selectedGame}`)
+  }
 
   return (
     <>
@@ -39,7 +66,9 @@ const HostStart = () => {
             </div>
 
         
-            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={gameStart}
+            >
                 Create Room
             </button>
           </div>

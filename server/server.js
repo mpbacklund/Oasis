@@ -10,13 +10,21 @@ const io = new Server(httpServer, {
     }
 });
 
+
 console.log("Server running...");
 
 io.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
 
     // Send a "hello" message to the client
-    socket.emit("hello", "world");
+    socket.emit("connected");
+
+    socket.emit("message", "does this work");
+
+    socket.on("gameSelected", (game) => {
+        console.log(game);
+        // create a room code and send it back to the socket, plus somehow store it, and create a room
+    });
 
     // Listen for the "hello" event from the client
     socket.on("hello", (message) => {
