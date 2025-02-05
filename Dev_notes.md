@@ -1,0 +1,1 @@
+Move .env file into parent folder
