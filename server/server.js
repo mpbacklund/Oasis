@@ -1,6 +1,9 @@
-const express = require("express");
-const { createServer } = require("http");
-const { Server } = require("socket.io");
+import * as dotenv from 'dotenv';
+import { Server } from 'socket.io';
+import { createServer} from 'http';
+import express from 'express';
+
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -53,12 +56,15 @@ io.on("connection", (socket) => {
 
         socket.join(roomCode);
 
-        io.to(roomNumber).emit("playerJoined", (socket.id, playerName));
+        io.to(roomCode).emit("playerJoined", (socket.id, playerName));
     });
 });
 
-httpServer.listen(3000, () => {
-    console.log("Listening on port 3000...");
+if (!process.env.PORT) {
+    throw new Error("PORT is not defined in .env file");
+}
+httpServer.listen(process.env.PORT, () => {
+    console.log(`Listening on port ${process.env.PORT}...`);
 });
 
 // function to create a random room code

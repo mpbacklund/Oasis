@@ -1,14 +1,15 @@
 import { Socket, io } from 'socket.io-client';
 import { Device } from './device'
+import { EventEmitter } from 'events'
 
 
-export class Host extends Device {
+export class Player extends Device {
     connectToServer(): void {
         const socket = io(this.socketURL);
         this.setSocket(socket);
 
-        socket.on("hostMessage", (client, message) => {
-            // do something
+        socket.on("hostMessage", (message) => {
+            this.emitEvent(message)
         });
     }
 

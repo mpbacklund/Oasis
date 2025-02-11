@@ -10,7 +10,7 @@ export class Host extends Device {
         this.setSocket(socket);
 
         socket.on("clientMessage", (client, message) => {
-            // do something
+            this.emitEvent([client, message])
         });
 
         socket.on("playerConnected", (playerID, playerName) => {
@@ -21,7 +21,6 @@ export class Host extends Device {
     }
 
     createRoom(gameType: GameMode): void {
-
         const socket = this.getSocket();
         if(socket) {
             socket.emit('createRoom', gameType.name, gameType.players);
