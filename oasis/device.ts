@@ -1,8 +1,5 @@
 import { Socket } from 'socket.io-client';
-import * as dotenv from 'dotenv';
-import { EventEmitter } from 'events';
-
-dotenv.config();
+import { EventEmitter } from 'eventemitter3'
 
 export abstract class Device extends EventEmitter {
     private _socket: Socket | null = null;
@@ -11,10 +8,11 @@ export abstract class Device extends EventEmitter {
     abstract connectToServer(): void;
 
     get socketURL(): string {
-        if (!process.env.SOCKET_URL) {
+        const socketURL = import.meta.env.SOCKET_URL
+        if (!socketURL) {
             throw new Error("SOCKET_URL is not defined in .env file");
         }
-        return process.env.SOCKET_URL;
+        return socketURL;
     }
 
     // function which processes can subscribe to that emits events
@@ -33,6 +31,10 @@ export abstract class Device extends EventEmitter {
 
     getSocket(): Socket | null {
         return this._socket;
+    }
+
+    getRoomCode(): string | null {
+        return this._roomCode;
     }
 
     private setupCommonListeners(socket: Socket): void {

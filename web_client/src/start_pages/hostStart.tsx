@@ -5,26 +5,8 @@ import gamesData from '../games/games.json'
 
 const HostStart = () => {
   let navigate = useNavigate();
-  const { storeSocket, } = useOutletContext<{ 
-    emitMessage: (event: string, message: any) => void;
-    messages: string[];
-    roomCode: string;
-  }>();
 
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Create and initialize the socket connection
-    const newSocket = io("http://localhost:3000");
-
-    // Pass the socket reference back to the parent
-    storeSocket(newSocket);
-
-    // Clean up the socket connection when the child unmounts
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [storeSocket]);
 
   const handleSelect = (game: string) => {
     setSelectedGame(game);
@@ -32,7 +14,7 @@ const HostStart = () => {
 
   const gameStart = () => {
     // TODO: do some error handling and stuff here to make sure selectedGame exists
-    emitMessage("gameSelected", selectedGame);
+    //emitMessage("gameSelected", selectedGame);
     //navigate(`/host/${selectedGame}`)
   }
 

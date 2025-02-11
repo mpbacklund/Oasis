@@ -1,4 +1,4 @@
-import { Socket, io } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { Device } from './device'
 import { GameMode } from '../gameMode';
 

@@ -7,7 +7,8 @@ export class Player extends Device {
     connectToServer(): void {
         const socket = io(this.socketURL);
         this.setSocket(socket);
-
+        
+        // when we get a message, emit this event using the event system
         socket.on("hostMessage", (message) => {
             this.emitEvent(message)
         });
