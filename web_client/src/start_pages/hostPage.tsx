@@ -11,23 +11,6 @@ const HostPage = () => {
     hostRef.current = new Host();
   }
 
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!host) return;
-    // Attach event listener
-    const eventHandler = (data: any) => {
-      // handle event logic here
-    };
-
-    host.on("eventTriggered", eventHandler);
-
-    // Cleanup on unmount
-    return () => {
-      host.off("eventTriggered", eventHandler);
-    };
-  }, []);
-  
-
   return (
     <Outlet context={{ roomCode, setRoomCode, host: hostRef.current }} />
   );

@@ -3,32 +3,41 @@ import { NavLink, Outlet, useOutletContext } from 'react-router'
 import { Socket } from "socket.io-client";
 import gamesData from '../games/games.json'
 import BankStartScreen from './bankStartScreen';
+import { Host } from '../../../../oasis/host'
+
+type OutletContextType = {
+  roomCode: string;
+  setRoomCode: (code: string) => void;
+  host: Host | null;
+};
+
+enum GameStates {
+  Lobby = "Lobby",
+}
 
 const BankData = () => {
-    const { socket, connected, roomCode } = useOutletContext<{
-        socket: Socket,
-        roomCode: string
-    }>();
+  const { roomCode, setRoomCode, host } = useOutletContext<OutletContextType>();
+  const [gameState, setGameState] = useState<GameStates>(GameStates.Lobby);
 
-    useEffect(() => {
-        if (!socket) return;
-    
-        // Listen for incoming messages from the server
-        socket.on("messageFromServer", (message: string) => {
-          console.log("Received message:", message);
-        });
+  useEffect(() => {
+    if (!host) return;
+    // Attach event listener
+    const eventHandler = (data: any) => {
+      console.log(data)
+    };
 
+    host.on("eventTriggered", eventHandler);
 
-    
-        // Clean up the listener when the component unmounts
-        return () => {
-          socket.off(); // Remove the event listener
-        };
-      }, [socket]);
+    // Cleanup on unmount
+    return () => {
+      host.off("eventTriggered", eventHandler);
+    };
+  }, []);
 
   return (
     <>
-        <BankStartScreen />
+      <h1> Bank Data Screen</h1>
+      <BankStartScreen />
     </>
   );
 }

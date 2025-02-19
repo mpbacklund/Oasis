@@ -15,7 +15,8 @@ const HostStart = () => {
   const gameStart = () => {
     // TODO: do some error handling and stuff here to make sure selectedGame exists
     //emitMessage("gameSelected", selectedGame);
-    //navigate(`/host/${selectedGame}`)
+    
+    navigate(`/host/${selectedGame}`)
   }
 
   return (
