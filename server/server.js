@@ -10,16 +10,15 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
         origin: "*",
+        methods: ["GET", "POST"],
     }
 });
 
 const rooms = new Map(); // Only track room metadata
 
-
-console.log("Server running...");
-
 io.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
+    socket.emit("connected");
 
     socket.on("createRoom", (game, players) => {
         console.log(game);
@@ -58,6 +57,10 @@ io.on("connection", (socket) => {
 
         io.to(roomCode).emit("playerJoined", (socket.id, playerName));
     });
+
+    // socket.on("clientMessage", (message, roomCode) => {
+    //     io.to(roomCode)emit
+    // });
 });
 
 if (!process.env.PORT) {

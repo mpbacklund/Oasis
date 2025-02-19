@@ -1,26 +1,58 @@
-import { useState, useEffect } from 'react'
-import { NavLink, useOutletContext, useNavigate } from 'react-router'
-import { Socket } from "socket.io-client";
-import gamesData from '../games/games.json'
+import { useState, useEffect } from 'react';
+import { useOutletContext, useNavigate, redirect } from 'react-router';
+import { Host } from '../../../oasis/host';
+import { gameModes, GameMode } from '../../../gameMode';
+
+type OutletContextType = {
+  roomCode: string;
+  setRoomCode: (code: string) => void;
+  host: Host | null;
+};
 
 const HostStart = () => {
+  const { setRoomCode, host } = useOutletContext<OutletContextType>();
   let navigate = useNavigate();
 
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [selectedGame, setSelectedGame] = useState<GameMode | null>(null);
 
-  const handleSelect = (game: string) => {
-    setSelectedGame(game);
+  // Fix: Get correct GameMode object instead of just setting the string name
+  const handleSelect = (gameName: string) => {
+    const gameMode = Object.values(gameModes).find(game => game.name === gameName) || null;
+    setSelectedGame(gameMode);
   };
 
+  useEffect(() => {
+    if (!host) return;
+    const eventHandler = (data: any) => {
+      const message = data.message;
+      console.log(message);
+      if (message === "roomCreated") {
+        setRoomCode(data.roomCode);
+        console.log(data.roomCode);
+        console.log(selectedGame);
+        navigate(`../${selectedGame?.name}`);
+      }
+    };
+
+    host.on("event", eventHandler);
+
+    return () => {
+      host.off("event", eventHandler);
+    };
+  }, [host, selectedGame]);
+
   const gameStart = () => {
-    // TODO: do some error handling and stuff here to make sure selectedGame exists
-    //emitMessage("gameSelected", selectedGame);
-    
-    navigate(`/host/${selectedGame}`)
-  }
+    if (!selectedGame || !host) {
+      console.error("Game not selected or host is null.");
+      return;
+    }
+
+    host.connectToServer();
+    console.log(selectedGame);
+    host.createRoom(selectedGame); // Fix: Pass the selectedGame object
+  };
 
   return (
-    <>
     <div className="min-h-screen w-screen bg-gray-100 flex flex-col">
       {/* Top Bar */}
       <header className="bg-blue-600 text-white p-4 shadow-md">
@@ -31,35 +63,34 @@ const HostStart = () => {
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm text-center">
           <h2 className="text-2xl font-semibold mb-8">Create a Game</h2>
-          {/* Buttons */}
-          <div className="space-y-4">
-          <div className="relative w-full max-w-xs mx-auto">
-            {/* Dropdown Container */}
-            <select
-                onChange={(e) => handleSelect(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-                <option value="" disabled selected>Select a Game</option>
-                {gamesData.map((game, index) => (
-                <option key={index} value={game.name}>
-                    {game.name}
-                </option>
-                ))}
-            </select>
-            </div>
 
-        
-            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onClick={gameStart}
+          {/* Game Selection Dropdown */}
+          <div className="relative w-full max-w-xs mx-auto">
+            <select
+              value={selectedGame ? selectedGame.name : ""}
+              onChange={(e) => handleSelect(e.target.value)} // Update to use `e.target.value`
+              className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-                Create Room
-            </button>
+              <option value="" disabled>Select a Game</option>
+              {Object.values(gameModes).map((game, index) => (
+                <option key={index} value={game.name}>
+                  {game.name}
+                </option>
+              ))}
+            </select>
           </div>
+
+          {/* Create Room Button */}
+          <button
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-4"
+            onClick={gameStart}
+          >
+            Create Room
+          </button>
         </div>
       </main>
     </div>
-    </>
   );
-}
+};
 
-export default HostStart
+export default HostStart;

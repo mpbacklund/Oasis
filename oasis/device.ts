@@ -8,7 +8,7 @@ export abstract class Device extends EventEmitter {
     abstract connectToServer(): void;
 
     get socketURL(): string {
-        const socketURL = import.meta.env.SOCKET_URL
+        const socketURL = "http://localhost:5173";
         if (!socketURL) {
             throw new Error("SOCKET_URL is not defined in .env file");
         }
@@ -48,11 +48,6 @@ export abstract class Device extends EventEmitter {
 
         socket.on('error', (error) => {
             console.error('Socket error:', error);
-        });
-
-        socket.on('roomCode', (roomCode) => {
-            this.setRoomCode(roomCode);
-            console.log('Room code received:', roomCode);
         });
     }
 }

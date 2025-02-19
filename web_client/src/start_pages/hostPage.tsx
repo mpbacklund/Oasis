@@ -9,6 +9,7 @@ const HostPage = () => {
   // Ensure the same `Host` instance is used
   if (!hostRef.current) {
     hostRef.current = new Host();
+    console.log(hostRef)
   }
 
   return (

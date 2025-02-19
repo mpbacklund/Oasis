@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useOutletContext } from 'react-router'
 import { Socket } from "socket.io-client";
 import gamesData from '../games/games.json'
-import BankStartScreen from './bankStartScreen';
-import { Host } from '../../../../oasis/host'
+import BankLobby from './bankLobby';
+import { Host } from '../../../../../oasis/host'
 
 type OutletContextType = {
   roomCode: string;
@@ -16,9 +16,10 @@ enum GameStates {
 }
 
 const BankData = () => {
-  const { roomCode, setRoomCode, host } = useOutletContext<OutletContextType>();
+  const { roomCode, host } = useOutletContext<OutletContextType>();
   const [gameState, setGameState] = useState<GameStates>(GameStates.Lobby);
 
+  // set up event listeners in useEffect
   useEffect(() => {
     if (!host) return;
     // Attach event listener
@@ -26,18 +27,17 @@ const BankData = () => {
       console.log(data)
     };
 
-    host.on("eventTriggered", eventHandler);
+    host.on("event", eventHandler);
 
     // Cleanup on unmount
     return () => {
-      host.off("eventTriggered", eventHandler);
+      host.off("event", eventHandler);
     };
   }, []);
 
   return (
     <>
-      <h1> Bank Data Screen</h1>
-      <BankStartScreen />
+      <BankLobby />
     </>
   );
 }
