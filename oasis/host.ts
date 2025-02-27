@@ -7,9 +7,7 @@ export class Host extends Device {
 
     connectToServer(): void {
         const socket = io(this.socketURL);
-        console.log(this.socketURL);
         this.setSocket(socket);
-        console.log(socket);
 
         socket.on("roomCreated", (roomCode) => {
             this.setRoomCode(roomCode);
@@ -24,12 +22,12 @@ export class Host extends Device {
             this.emitEvent({message: "clientMessage", sender: client, event: messageData})
         });
 
-        socket.on("playerConnected", (playerID, playerName) => {
-            // TODO: add some validation here to handle reconnections
-            // probably just add the second part of the map a list with the playerName and connection status
-            this._players.set(playerID, playerName);
-            this.emitEvent({message: "playerConnected", playerName: playerName, playerID: playerID});
-        });
+        socket.on("playerJoined", (socketID, playerName, _) => {
+            this._players.set(socketID, playerName);
+            this.emitEvent({message: "playerConnected", playerName: playerName, playerID: socketID})
+
+            // logic for if a different player joined
+        })
     }
 
     getPlayers(): Map<string, string> {

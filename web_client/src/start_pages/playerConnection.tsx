@@ -1,32 +1,20 @@
-import { useState, useEffect } from 'react'
-import { NavLink, Outlet } from 'react-router'
-import { io, Socket } from "socket.io-client";
-import gamesData from '../games/games.json'
+import { useState, useEffect, useRef } from 'react';
+import { Outlet } from 'react-router';
+import { Player } from '../../../oasis/player'
 
-const HostConnection = () => {
-    const [socket, setSocket] = useState<Socket | null>(null);
-    const [roomCode, setRoomCode] = useState("");
-    
-    useEffect(() => {
-        // Connect to the Socket.IO server
-        const newSocket = io("http://localhost:3000");
-        setSocket(newSocket);
+const PlayerPage = () => {
+  const [roomCode, setRoomCode] = useState("");
+  const playerRef = useRef<Player | null>(null);
 
-        newSocket.on("roomCode", (code) => {
-            setRoomCode(code);
-        })
-    
-        // Clean up the socket connection when the component unmounts
-        return () => {
-            newSocket.disconnect();
-        };
-      }, []);
+  // Ensure the same `Host` instance is used
+  if (!playerRef.current) {
+    playerRef.current = new Player();
+    console.log(playerRef)
+  }
 
   return (
-    <>
-        <Outlet context={{ socket, roomCode}}/>
-    </>
+    <Outlet context={{ roomCode, setRoomCode, player: playerRef.current}} />
   );
-}
+};
 
-export default HostConnection
+export default PlayerPage;

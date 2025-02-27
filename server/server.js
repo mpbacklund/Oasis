@@ -18,7 +18,7 @@ const rooms = new Map(); // Only track room metadata
 
 io.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
-    socket.emit("connected");
+    socket.emit("connected", ("a"));
 
     socket.on("createRoom", (game, players) => {
         console.log(game);
@@ -42,6 +42,7 @@ io.on("connection", (socket) => {
     socket.on("joinRoom", (roomCode, playerName) => {
         // check if the room exists
         if (!rooms.has(roomCode)) {
+            console.log("room does not exist")
             socket.emit("error", "Room does not exist.");
             return;
         }
@@ -50,12 +51,15 @@ io.on("connection", (socket) => {
         const roomSockets = io.sockets.adapter.rooms.get(roomCode) || new Set();
         if (roomSockets.size >= rooms.get(roomCode).maxPlayers) {
             socket.emit("error", "Room is full.");
+            console.log("room is full");
             return;
         }
 
+        console.log(`${socket.id}, name ${playerName}, attempting to join ${roomCode}`)
+        
         socket.join(roomCode);
 
-        io.to(roomCode).emit("playerJoined", (socket.id, playerName));
+        io.to(roomCode).emit("playerJoined", socket.id, playerName, rooms.get(roomCode).game);
     });
 
     // socket.on("clientMessage", (message, roomCode) => {

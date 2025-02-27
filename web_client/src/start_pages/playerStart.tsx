@@ -1,21 +1,52 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router'
+import { useState, useEffect } from 'react'
+import { NavLink, useOutletContext, useNavigate } from 'react-router'
+import { Player } from '../../../oasis/player';
+
+type OutletContextType = {
+  roomCode: string;
+  setRoomCode: (code: string) => void;
+  player: Player | null;
+};
 
 const PlayerStart = () => {
-    const [roomCode, setRoomCode] = useState("");
-    const [name, setName] = useState("");
+  const { setRoomCode, roomCode, player } = useOutletContext<OutletContextType>();
+  const [name, setName] = useState("");
+  let navigate = useNavigate();
 
-    const onRoomCodeChange = (e) => {
-        setRoomCode(e.target.value);
-    }
+  useEffect(() => {
+    if (!player) return;
+    const eventHandler = (data: any) => {
+      const message = data.message;
+      if (message === "joinedRoom") {
+        navigate(`../${data.game}`)
+      }
+      if (message === "connected") {
+        player.joinRoom(roomCode, name);
+      }
+    };
 
-    const onNameChange = (e) => {
-        setName(e.target.value);
-    }
+    player.on("event", eventHandler);
 
-    const joinGame = () => {
-      
+    return () => {
+      player.off("event", eventHandler);
+    };
+  }, [player, roomCode, name]);
+
+  const onRoomCodeChange = (e) => {
+      setRoomCode(e.target.value);
+  }
+
+  const onNameChange = (e) => {
+      setName(e.target.value);
+  }
+
+  const joinGame = () => {
+    if (!player) {
+      console.error("player is null.");
+      return;
     }
+    player.connectToServer();
+  }
 
   return (
     <>

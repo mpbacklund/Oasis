@@ -29,7 +29,6 @@ const HostStart = () => {
       if (message === "roomCreated") {
         setRoomCode(data.roomCode);
         console.log(data.roomCode);
-        console.log(selectedGame);
         navigate(`../${selectedGame?.name}`);
       }
     };
@@ -48,7 +47,6 @@ const HostStart = () => {
     }
 
     host.connectToServer();
-    console.log(selectedGame);
     host.createRoom(selectedGame); // Fix: Pass the selectedGame object
   };
 

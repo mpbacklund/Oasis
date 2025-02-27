@@ -1,6 +1,5 @@
 import { Socket, io } from 'socket.io-client';
 import { Device } from './device'
-import { EventEmitter } from 'events'
 
 
 export class Player extends Device {
@@ -11,6 +10,16 @@ export class Player extends Device {
         // when we get a message, emit this event using the event system
         socket.on("hostMessage", (message) => {
             this.emitEvent(message)
+        });
+
+        socket.on("connected", () => {
+            this.emitEvent({message: "connected"})
+        });
+
+        socket.on("playerJoined", (socketID, playerName, game) => {
+            this.emitEvent({message: "joinedRoom", game: game})
+
+            // logic for if a different player joined
         });
     }
 

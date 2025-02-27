@@ -7,6 +7,8 @@ import PlayerStart from './start_pages/playerStart.tsx';
 import HostStart from './start_pages/hostStart.tsx';
 import HostPage from './start_pages/hostPage.tsx';
 import BankData from './games/bank/pages/bankData.tsx';
+import PlayerPage from './start_pages/playerConnection.tsx';
+import BankPlayerStart from './games/bank/pages/bankPlayerStart.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -19,9 +21,9 @@ createRoot(document.getElementById('root')!).render(
         
       </Route>
 
-      <Route path="player" >
+      <Route path="player" element={<PlayerPage/>}>
         <Route path="start" element={<PlayerStart/>} />
-        <Route path="bank" />
+        <Route path="bank" element={<BankPlayerStart/>}/>
       </Route>
     </Routes>
   </BrowserRouter>,
