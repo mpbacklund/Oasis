@@ -7,7 +7,7 @@ type BankLobbyProps = {
   roomCode: string;
   players: (Player | null)[];
   maxPlayers: number;
-  host: Host;
+  host: Host | null;
 };
 
 const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, maxPlayers, host }) => {
@@ -15,8 +15,10 @@ const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, maxPlayers, hos
   
   const columns = Math.ceil(maxPlayers / 2); // Half the number of players
 
-  const handleKick = (playerName: string) {
-    host.emit("")
+  const handleKick = (playerName: string) => {
+    if(host) {
+      host.sendMessage({message: "playerKicked", playerName: playerName})
+    }
   }
 
   return (
@@ -32,16 +34,6 @@ const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, maxPlayers, hos
           const player = players[index]; // Get the player if available
           return <PlayerTile key={index} number={index + 1} playerName={player ? player.name : null} onKick={handleKick}/>;
         })}
-      </div>
-
-      {/* Example button to simulate a player joining */}
-      <div className="p-4">
-        <button
-          onClick={() => handlePlayerJoin('Alice')}
-          className="bg-green-500 text-white p-2 rounded"
-        >
-          Join as Alice
-        </button>
       </div>
     </div>
   );

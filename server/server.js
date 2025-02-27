@@ -56,15 +56,17 @@ io.on("connection", (socket) => {
         }
 
         console.log(`${socket.id}, name ${playerName}, attempting to join ${roomCode}`)
-        
+
         socket.join(roomCode);
 
         io.to(roomCode).emit("playerJoined", socket.id, playerName, rooms.get(roomCode).game);
     });
 
-    // socket.on("clientMessage", (message, roomCode) => {
-    //     io.to(roomCode)emit
-    // });
+    // basically when one person sends a message to the room, we broadcast it to everyone
+    socket.on("roomMessage", (roomCode, data) => {
+        console.log(data);
+        io.to(roomCode).emit("roomMessage", data);
+    });
 });
 
 if (!process.env.PORT) {

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useOutletContext } from 'react-router'
 import { Socket } from "socket.io-client";
-import gamesData from '../games/games.json'
 import BankLobby from './bankLobby';
 import { Host } from '../../../../../oasis/host'
 import { Player } from '../components/types';
@@ -29,11 +28,7 @@ const BankData = () => {
     if (!host) return;
     // Attach event listener
     const eventHandler = (data: any) => {
-      console.log(data)
-      const message = data.message;
-      if (message === "playerConnected") {
-        onJoin(data.playerID, data.playerName);
-      }
+      handleGameMessage(data);
     };
 
     host.on("event", eventHandler);
@@ -43,6 +38,17 @@ const BankData = () => {
       host.off("event", eventHandler);
     };
   }, []);
+
+  const handleGameMessage = (data: any) => {
+    const message = data.message;
+    console.log(data);
+    if(message === "playerKicked") {
+      setPlayers(prevPlayers => prevPlayers.filter(p => p?.name !== data.playerName));
+    };
+    if (message === "playerConnected") {
+      onJoin(data.playerID, data.playerName);
+    }
+  };
 
   const onJoin = (playerID: string, playerName: string) => {
     // Check if player already exists
