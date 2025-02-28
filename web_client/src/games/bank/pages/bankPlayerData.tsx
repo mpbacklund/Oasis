@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Player } from '../../../../../oasis/player';
 import { NavLink, useNavigate, useOutletContext } from 'react-router'
 
+import BankPlayerScreen from './bankPlayerScreen';
+
 type OutletContextType = {
   roomCode: string;
   setRoomCode: (code: string) => void;
   player: Player | null;
 };
 
-enum gameStates {
+enum GameStates {
   Lobby = "Lobby",
   MyTurn = "MyTurn",
   NotMyTurn = "NotMyTurn"
@@ -19,7 +21,7 @@ const BankPlayerData = () => {
   let navigate = useNavigate();
 
   // initialize gamestate as Lobby
-  const [gameState, setGameState] = useState<gameStates>(gameStates.Lobby);
+  const [gameState, setGameState] = useState<GameStates>(GameStates.Lobby);
 
     // set up event listeners in useEffect
     useEffect(() => {
@@ -51,7 +53,9 @@ const BankPlayerData = () => {
 
   return (
     <>
-      <h1>Player Bank game page</h1>
+      <div className="min-h-screen flex items-center justify-center">
+        <BankPlayerScreen />
+      </div>
     </>
   );
 }

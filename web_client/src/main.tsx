@@ -5,7 +5,7 @@ import './index.css'
 import StartPage from './start_pages/startPage.tsx'
 import PlayerStart from './start_pages/playerStart.tsx';
 import HostStart from './start_pages/hostStart.tsx';
-import HostPage from './start_pages/hostPage.tsx';
+import HostPage from './start_pages/hostConnection.tsx';
 import BankData from './games/bank/pages/bankData.tsx';
 import PlayerPage from './start_pages/playerConnection.tsx';
 import BankPlayerData from './games/bank/pages/bankPlayerData.tsx';
