@@ -71,7 +71,7 @@ const BankData = () => {
 
   return (
     <>
-      <BankLobby roomCode={roomCode} players={players} maxPlayers={8} host={host}/>
+      <BankLobby roomCode={roomCode} players={players} setPlayers={setPlayers} maxPlayers={8} host={host}/>
     </>
   );
 }

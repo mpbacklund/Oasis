@@ -6,18 +6,20 @@ import { Host } from '../../../../../oasis/host';
 type BankLobbyProps = {
   roomCode: string;
   players: (Player | null)[];
+  setPlayers: React.Dispatch<React.SetStateAction<(Player | null)[]>>;
   maxPlayers: number;
   host: Host | null;
 };
 
-const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, maxPlayers, host }) => {
+const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, setPlayers, maxPlayers, host }) => {
   const gameName = 'Bank'; // Example game name
   
   const columns = Math.ceil(maxPlayers / 2); // Half the number of players
 
-  const handleKick = (playerName: string) => {
+  const handleKick = (playerID: string) => {
     if(host) {
-      host.sendMessage({message: "playerKicked", playerName: playerName})
+      host.kickPlayer(playerID)
+      setPlayers(prevPlayers => prevPlayers.filter(p => p?.id !== playerID));
     }
   }
 
@@ -32,7 +34,7 @@ const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, maxPlayers, hos
       <div className={`flex-grow grid grid-cols-${columns} grid-rows-2 gap-8 p-10`}>
         {Array.from({ length: maxPlayers }).map((_, index) => {
           const player = players[index]; // Get the player if available
-          return <PlayerTile key={index} number={index + 1} playerName={player ? player.name : null} onKick={handleKick}/>;
+          return <PlayerTile key={index} number={index + 1} player={player} onKick={handleKick}/>;
         })}
       </div>
     </div>

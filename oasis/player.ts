@@ -9,17 +9,17 @@ export class Player extends Device {
         
         // when we get a message, emit this event using the event system
         socket.on("hostMessage", (message) => {
-            this.emitEvent(message)
-        });
-
-        socket.on("connected", () => {
-            this.emitEvent({message: "connected"})
+            this.emitEvent(message);
         });
 
         socket.on("playerJoined", (socketID, playerName, game) => {
-            this.emitEvent({message: "joinedRoom", game: game})
+            this.emitEvent({message: "joinedRoom", game: game});
 
             // logic for if a different player joined
+        });
+
+        socket.on("kicked", () => {
+            this.emitEvent({message: "kicked"});
         });
     }
 

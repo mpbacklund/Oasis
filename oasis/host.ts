@@ -14,10 +14,6 @@ export class Host extends Device {
             this.emitEvent({message: "roomCreated", roomCode: roomCode})
         });
 
-        socket.on("connected", () => {
-            console.log("connected")
-        });
-
         socket.on("clientMessage", (client, messageData) => {
             this.emitEvent({message: "clientMessage", sender: client, event: messageData})
         });
@@ -25,8 +21,6 @@ export class Host extends Device {
         socket.on("playerJoined", (socketID, playerName, _) => {
             this._players.set(socketID, playerName);
             this.emitEvent({message: "playerConnected", playerName: playerName, playerID: socketID})
-
-            // logic for if a different player joined
         })
     }
 
@@ -41,6 +35,13 @@ export class Host extends Device {
         }
         else {
             console.error("socket not connected");
+        }
+    }
+
+    kickPlayer(playerID: string): void {
+        const socket = this.getSocket();
+        if(socket) {
+            socket.emit('kickPlayer', playerID, this.getRoomCode())
         }
     }
 }

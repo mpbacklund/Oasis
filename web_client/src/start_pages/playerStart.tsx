@@ -32,11 +32,11 @@ const PlayerStart = () => {
     };
   }, [player, roomCode, name]);
 
-  const onRoomCodeChange = (e) => {
+  const onRoomCodeChange = (e:any) => {
       setRoomCode(e.target.value);
   }
 
-  const onNameChange = (e) => {
+  const onNameChange = (e:any) => {
       setName(e.target.value);
   }
 

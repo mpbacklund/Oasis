@@ -44,11 +44,13 @@ export abstract class Device extends EventEmitter {
         }
     }
 
+    // set up listeners for messages from the server
     private setupCommonListeners(socket: Socket): void {
         socket.on('connect', () => {
-            console.log('Connected to the server (from Device).');
+            this.emitEvent({message: "connected"})
+            console.log('Connected to the server');
         });
-
+        
         socket.on('disconnect', () => {
             console.log('Disconnected from the server.');
         });
@@ -56,7 +58,8 @@ export abstract class Device extends EventEmitter {
         socket.on('error', (error) => {
             console.error('Socket error:', error);
         });
-
+        
+        // when we get a room message from the server, emit it whatever uses device using our event emitter
         socket.on('roomMessage', (data) => {
             this.emitEvent(data);
         });

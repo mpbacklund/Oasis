@@ -8,7 +8,7 @@ import HostStart from './start_pages/hostStart.tsx';
 import HostPage from './start_pages/hostPage.tsx';
 import BankData from './games/bank/pages/bankData.tsx';
 import PlayerPage from './start_pages/playerConnection.tsx';
-import BankPlayerStart from './games/bank/pages/bankPlayerStart.tsx';
+import BankPlayerData from './games/bank/pages/bankPlayerData.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
 
       <Route path="player" element={<PlayerPage/>}>
         <Route path="start" element={<PlayerStart/>} />
-        <Route path="bank" element={<BankPlayerStart/>}/>
+        <Route path="bank" element={<BankPlayerData/>}/>
       </Route>
     </Routes>
   </BrowserRouter>,

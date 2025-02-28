@@ -18,7 +18,7 @@ const rooms = new Map(); // Only track room metadata
 
 io.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
-    socket.emit("connected", ("a"));
+    socket.emit("connected");
 
     socket.on("createRoom", (game, players) => {
         console.log(game);
@@ -66,6 +66,16 @@ io.on("connection", (socket) => {
     socket.on("roomMessage", (roomCode, data) => {
         console.log(data);
         io.to(roomCode).emit("roomMessage", data);
+    });
+
+    socket.on("kickPlayer", (playerID, roomCode) => {
+        const targetSocket = io.sockets.sockets.get(playerID);
+        if (targetSocket) {
+            console.log(`Kicking player: ${playerID}`);
+            targetSocket.leave(roomCode); // Remove from room
+            targetSocket.emit("kicked"); // Notify the player
+            targetSocket.disconnect(true); // Force disconnect
+        }
     });
 });
 
