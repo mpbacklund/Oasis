@@ -4,6 +4,7 @@ import { Socket } from "socket.io-client";
 import BankLobby from './bankLobby';
 import { Host } from '../../../../../oasis/host'
 import { Player } from '../components/types';
+import BankHostGameScreen from './bankHostGameScreen';
 
 type OutletContextType = {
   roomCode: string;
@@ -15,6 +16,7 @@ type OutletContextType = {
 
 enum GameStates {
   Lobby = "Lobby",
+  Game = "Game",
 }
 
 const BankData = () => {
@@ -69,9 +71,14 @@ const BankData = () => {
     console.log(players)
   };
 
+  const startGame = () => {
+    setGameState(GameStates.Game);
+  }
+
   return (
     <>
-      <BankLobby roomCode={roomCode} players={players} setPlayers={setPlayers} maxPlayers={8} host={host}/>
+      {gameState === GameStates.Lobby && <BankLobby roomCode={roomCode} players={players} setPlayers={setPlayers} maxPlayers={8} host={host} startGame={startGame}/>}
+      {gameState === GameStates.Lobby && <BankHostGameScreen/>}
     </>
   );
 }

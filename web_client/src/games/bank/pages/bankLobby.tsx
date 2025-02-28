@@ -9,9 +9,10 @@ type BankLobbyProps = {
   setPlayers: React.Dispatch<React.SetStateAction<(Player | null)[]>>;
   maxPlayers: number;
   host: Host | null;
+  startGame: () => void;
 };
 
-const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, setPlayers, maxPlayers, host }) => {
+const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, setPlayers, maxPlayers, host, startGame }) => {
   const gameName = 'Bank'; // Example game name
   
   const columns = Math.ceil(maxPlayers / 2); // Half the number of players
@@ -36,6 +37,15 @@ const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, setPlayers, max
           const player = players[index]; // Get the player if available
           return <PlayerTile key={index} number={index + 1} player={player} onKick={handleKick}/>;
         })}
+      </div>
+
+      <div className="p-4 flex justify-center">
+        <button 
+          onClick={startGame}
+          className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded text-xl"
+        >
+          Start Game
+        </button>
       </div>
     </div>
   );
