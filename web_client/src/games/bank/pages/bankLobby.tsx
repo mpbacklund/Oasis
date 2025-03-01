@@ -32,7 +32,7 @@ const GamePage: React.FC<BankLobbyProps> = ({ roomCode, players, setPlayers, max
         <div className="text-7xl text-white">{gameName}</div>
       </div>
 
-      <div className={`flex-grow grid grid-cols-${columns} grid-rows-2 gap-8 p-10`}>
+      <div className={`flex-grow grid gap-8 p-10`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gridTemplateRows: "repeat(2, minmax(0, 1fr))" }}>
         {Array.from({ length: maxPlayers }).map((_, index) => {
           const player = players[index]; // Get the player if available
           return <PlayerTile key={index} number={index + 1} player={player} onKick={handleKick}/>;

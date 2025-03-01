@@ -21,7 +21,6 @@ enum GameStates {
 
 const BankData = () => {
   const { roomCode, host, players, setPlayers } = useOutletContext<OutletContextType>();
-
   const [gameState, setGameState] = useState<GameStates>(GameStates.Lobby);
   const maxPlayers = 8;
 
@@ -65,7 +64,7 @@ const BankData = () => {
         return prevPlayers; // Prevent adding more than maxPlayers
       }
   
-      return [...prevPlayers, { id: playerID, name: playerName, connected: true }];
+      return [...prevPlayers, { id: playerID, name: playerName, connected: true, score: 0}];
     });
 
     console.log(players)
@@ -78,7 +77,7 @@ const BankData = () => {
   return (
     <>
       {gameState === GameStates.Lobby && <BankLobby roomCode={roomCode} players={players} setPlayers={setPlayers} maxPlayers={8} host={host} startGame={startGame}/>}
-      {gameState === GameStates.Lobby && <BankHostGameScreen/>}
+      {gameState === GameStates.Game && <BankHostGameScreen players={players} host={host} />}
     </>
   );
 }
